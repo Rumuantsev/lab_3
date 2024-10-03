@@ -6,7 +6,7 @@ import static java.util.Collections.frequency;
 
 public class Main {
     public static void main(String[] args) {
-        /*
+
         Scanner in = new Scanner(System.in);
         System.out.println(" ");
         System.out.print("Input N: ");
@@ -67,7 +67,8 @@ public class Main {
 
         for (int number: randomList) {
             System.out.print(number + ": " + frequency(randomList, number) + " \n");
-        }*/
+        }
+
         List<Human> humans = new ArrayList<>();
         Human human1 = new Human("Roma","Ivanov", 50);
         Human human2 = new Human("Gena","Rogov", 49);
@@ -89,24 +90,66 @@ public class Main {
         humanTreeSetWithCompLName.addAll(humans);
         System.out.println(humanTreeSetWithCompLName); //Отсортировано по фамилии
 
-        TreeSet<Human> humanTreeSetWithCompAge = new TreeSet<>(new Comparator<Human>() {
-            @Override
-            public int compare(Human human1, Human human2) {
-                return Integer.compare(human1.getAge(), human2.getAge());
-            }
-        });
+        TreeSet<Human> humanTreeSetWithCompAge = new TreeSet<>(Comparator.comparingInt(Human::getAge));
         humanTreeSetWithCompAge.addAll(humans);
         System.out.println(humanTreeSetWithCompAge); //Отсортировано по возрасту
 
+        String str = "The phone rings on the phone";
+        HashMap<String, Integer> words = getStringIntegerHashMap(str);
+        System.out.println(words);
+
+        Map<String, Integer> map = new LinkedHashMap<>();
+        map.put("Arseniy", 8);
+        map.put("Alina", 8);
+        map.put("Vladislav", 9);
+        System.out.println(map);
+        Map<Integer, String> swappedMap = swapKeyValues(map);
+        System.out.println(swappedMap);
+    }
+
+    private static HashMap<String, Integer> getStringIntegerHashMap(String str) {
+        String strIgnoreCase =  str.toLowerCase();
+
+        HashMap<String, Integer> words = new HashMap<>();
+        String word = "";
+        for(int i = 0; i < strIgnoreCase.length(); ++i){
+            if(strIgnoreCase.charAt(i) != ' '){
+                word += strIgnoreCase.charAt(i);
+                if(i == strIgnoreCase.length() - 1){
+                    if (!words.containsKey(word)) {
+                        words.put(word, 1);
+                    } else{
+                        words.put(word, words.get(word) + 1);
+                    }
+                    word = "";
+                }
+            } else if(strIgnoreCase.charAt(i) == ' '){
+                if (!words.containsKey(word)) {
+                    words.put(word, 1);
+                } else{
+                    words.put(word, words.get(word) + 1);
+                }
+                word = "";
+            }
+        }
+        return words;
+    }
+
+    private static Map<Integer, String> swapKeyValues(Map<String, Integer> originalMap) {
+        Map<Integer, String> swappedMap = new LinkedHashMap<>();
+        for (Map.Entry<String, Integer> entry : originalMap.entrySet()) {
+            swappedMap.put(entry.getValue(), entry.getKey());
+        }
+        return swappedMap;
     }
 }
 
 
 class Human implements Comparable<Human> {
 
-    private String firstName;
-    private String lastName;
-    private int age;
+    private final String firstName;
+    private final String lastName;
+    private final int age;
 
     public Human(String firstName, String lastName, int age) {
         this.firstName = firstName;
@@ -114,45 +157,22 @@ class Human implements Comparable<Human> {
         this.age = age;
     }
 
-    // Метод для сравнения двух объектов Human по фамилии
     @Override
     public int compareTo(Human other) {
         return this.lastName.compareToIgnoreCase(other.lastName);
-    }
-
-    // Методы get/set для полей
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
     }
 
     public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     public int getAge() {
         return age;
     }
 
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    // Метод toString для удобной печати
     @Override
     public String toString() {
-        return "Human{" +
-                "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", age=" + age +
-                '}';
+        return "Human{" + "firstName=" + firstName + ", lastName=" + lastName + ", age=" + age + '}';
     }
 }
 
@@ -170,7 +190,7 @@ class PrimesGenerator {
             if (isPrime(number)) {
                 primes.add(number);
             }
-            number += 2; // Проверяем только нечетные числа
+            number += 2;
         }
 
         return primes;
@@ -195,7 +215,6 @@ class PrimesGenerator {
     }
 }
 
-// Класс компаратора, сравнивающий людей по фамилии
 class HumanComparatorByLastName implements Comparator<Human> {
 
     @Override
